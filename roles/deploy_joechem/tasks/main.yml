@@ -1,0 +1,75 @@
+---
+
+- name: Get name of most-up-to-date deployment directory
+  shell: cat /home/ubuntu/directory.txt
+  register: previous_deployment
+
+- name: Empty joechem_temp
+  raw: sudo rm -rf /home/ubuntu/joechem_temp/*
+
+- name: Copy previous deployment files to temp directory
+  raw: cp -R /home/ubuntu/{{ previous_deployment.stdout }}/* /home/ubuntu/joechem_temp/
+
+- name: Remove previous symlink association
+  raw:  sudo rm -rf /var/www/joechem/*
+
+- name: Establish temporary new symlink
+  raw: cp -R --symbolic-link /home/ubuntu/joechem_temp/* /var/www/joechem/
+
+- name: Remove old deployment directory  
+  raw: sudo rm -rf /home/ubuntu/{{ previous_deployment.stdout }}
+
+- name: Create a unique ID
+  shell: echo "`date +"%Y%m%d%H%M%S"`-$(cat /dev/urandom | tr -cd [:alpha:] | tr '[:upper:]' '[:lower:]' | head -c 4)"
+  register: my_unique_id
+
+- name: Create a unique ID
+  shell: echo "`date +"%Y%m%d%H%M%S"`-$(cat /dev/urandom | tr -cd [:alpha:] | tr '[:upper:]' '[:lower:]' | head -c 4)"
+  register: my_unique_id
+
+- name: Change ownership to ubuntu and www-data
+  raw: sudo chown -R ubuntu:www-data /var/www/
+
+- name: Change to new joechem directory
+  raw: cd /home/ubuntu/
+
+- name: Clone from remote master branch into newly made directory
+  raw: sudo git clone git@bitbucket.org:jdelnano/joechem.git joechem_{{ my_unique_id.stdout }}
+
+- name: Copy .env file into newly made directory
+  raw: cp /home/ubuntu/.env /home/ubuntu/joechem_{{ my_unique_id.stdout }}
+
+
+- name: Change ownership back to ubuntu and www-data
+  raw: sudo chown -R ubuntu:www-data /home/ubuntu/joechem_{{ my_unique_id.stdout }}
+
+- name: Permissions command f
+  raw: sudo find /home/ubuntu/joechem_{{ my_unique_id.stdout }} -type f -exec chmod 664 {} \;
+
+- name: Permissions command d
+  raw: sudo find /home/ubuntu/joechem_{{ my_unique_id.stdout }} -type d -exec chmod 775 {} \;
+
+- name: Change to new joechem directory
+  raw: cd /home/ubuntu/joechem_{{ my_unique_id.stdout }}
+
+- name: Change group of cache file
+  raw: sudo chgrp -R www-data  /home/ubuntu/joechem_{{ my_unique_id.stdout }}/storage/ /home/ubuntu/joechem_{{ my_unique_id.stdout }}/bootstrap/cache/
+
+- name: Change group of cache file
+  raw: sudo chmod -R ug+rwx  /home/ubuntu/joechem_{{ my_unique_id.stdout }}/storage/ /home/ubuntu/joechem_{{ my_unique_id.stdout }}/bootstrap/cache/
+
+- composer:
+    command: install
+    working_dir: /home/ubuntu/joechem_{{ my_unique_id.stdout }}
+
+- name: Rerun migrations 
+  raw: php /home/ubuntu/joechem_{{ my_unique_id.stdout }}/artisan migrate --force
+
+- name: Remove previous symlink association
+  raw:  sudo rm -rf /var/www/joechem/*
+
+- name: Establish new symlink
+  raw: cp -R --symbolic-link /home/ubuntu/joechem_{{ my_unique_id.stdout }}/* /var/www/joechem/
+
+- name: Make directory.txt
+  raw: echo joechem_{{ my_unique_id.stdout }} > /home/ubuntu/directory.txt
