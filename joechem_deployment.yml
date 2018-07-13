@@ -5,8 +5,8 @@
 #
 - hosts: prod
   gather_facts: False
-    remote_user: ubuntu
-      become: yes
-        roles:
-            - deploy_joechem
+  remote_user: ubuntu
+  become: yes
+  roles:
+    - deploy_joechem
 
