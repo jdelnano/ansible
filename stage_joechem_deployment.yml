@@ -3,11 +3,9 @@
 # deploy to joechem stage server(s) via ansible
 #
 
-- hosts: stage-joechem
+- hosts: stage
   gather_facts: False
   remote_user: ubuntu
   become: yes
-  var_files:
-    - roles/deploy_joechem/vars/vars.yml
   roles:
     - deploy_joechem

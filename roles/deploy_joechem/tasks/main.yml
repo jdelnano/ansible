@@ -23,10 +23,6 @@
   shell: echo "`date +"%Y%m%d%H%M%S"`-$(cat /dev/urandom | tr -cd [:alpha:] | tr '[:upper:]' '[:lower:]' | head -c 4)"
   register: my_unique_id
 
-- name: Create a unique ID
-  shell: echo "`date +"%Y%m%d%H%M%S"`-$(cat /dev/urandom | tr -cd [:alpha:] | tr '[:upper:]' '[:lower:]' | head -c 4)"
-  register: my_unique_id
-
 - name: Change ownership to ubuntu and www-data
   raw: sudo chown -R ubuntu:www-data /var/www/
 
