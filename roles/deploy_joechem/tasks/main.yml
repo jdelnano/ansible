@@ -30,7 +30,7 @@
   raw: cd /home/ubuntu/
 
 - name: Clone from remote master branch into newly made directory
-  raw: sudo git clone git@bitbucket.org:jdelnano/joechem.git joechem_{{ my_unique_id.stdout }}
+  raw: sudo git clone https://github.com/jdelnano/joechem.git joechem_{{ my_unique_id.stdout }}
 
 - name: Copy .env file into newly made directory
   raw: cp /home/ubuntu/.env /home/ubuntu/joechem_{{ my_unique_id.stdout }}
