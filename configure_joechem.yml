@@ -7,9 +7,10 @@
 - hosts: test
   gather_facts: false
   become: yes
-  #vars_files: 
+  vars_files: 
+    - ./vars/laravel_php_deps.yml
+    - ./vars/mysql.yml
   roles:
       - php
         #- mysql
         #- nginx
-

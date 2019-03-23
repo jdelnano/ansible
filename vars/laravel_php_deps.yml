@@ -1,0 +1,35 @@
+---
+
+php_laravel_deps:
+    - deps:  php7.2-mbstring 
+    - deps: php7.2-xmlrpc
+    - deps: php7.2-soap
+    - deps: php7.2-gd
+    - deps: php7.2-xml 
+    - deps: php7.2-zip
+    - deps: php7.2-mysql
+    - deps: php7.2-common
+
+ubuntu_laravel_deps:
+    - deps: libc6
+    - deps: libfreetype6
+    - deps: libgd3
+    - deps: libjpeg62-turbo-dev
+    - deps: libpng12-dev
+    - deps: libvpx1
+    - deps: libx11-6
+    - deps: libxpm4
+    - deps: zlib1g
+    - deps: ucf
+    - deps: libcurl4-gnutls-dev
+    - deps: libltdl7
+    - deps: mysql-client
+    - deps: libmagickwand-dev
+    - deps: libmcrypt-dev
+    - deps: libgcc1
+    - deps: libicu52
+    - deps: libicu-dev
+    - deps: wget
+    - deps: git
+    - deps: tmux
+    - deps: htop

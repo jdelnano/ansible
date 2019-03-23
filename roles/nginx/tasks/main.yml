@@ -1,0 +1,34 @@
+---
+
+#
+# Install nginx and configure for Laravel/LEMP stack
+#
+
+- name: "Install nginx"
+  apt: name=nginx state=lastest
+
+- name: "Start nginx service"
+  service:
+      name: nginx
+      state: started
+  become: yes
+
+- name: "Copy the nginx config file and restart nginx"
+  copy:
+      src: /home/ubuntu/laravel-nginx.cfg
+      dest: /etc/nginx/sites-available/laravel-nginx.cfg
+      state: link
+  become: yes
+
+- name: "Create symlink between sites-enabled and sites-available"
+  file:
+      src: /etc/nginx/sites-available/laravel-nginx.cfg
+      dest: /etc/nginx/sites-enabled/default
+      state: link
+  become: yes
+
+- name: "Restart nginx service"
+  service:
+      name: nginx
+      state: restarted
+  become: yes

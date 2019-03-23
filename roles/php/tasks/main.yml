@@ -1,7 +1,18 @@
 ---
 
 #
-# Install php
+# Install php and other libraries/dependencies for Laravel
 #
 
-- name: 
+- name: Add PHP 7 PPA repository
+  become: true
+  apt_repository:
+    repo: 'ppa:ondrej/php'
+
+- name: "Install Other Packages/Libraries"
+  apt: name={{ item.dep }} state=present
+  with_items: {{ ubuntu_laravel_deps }}
+
+- name: "Install PHP"
+  apt: name={{ item.dep }} state=present
+  with_items: {{ php_laravel_deps }}
