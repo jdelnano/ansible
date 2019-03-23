@@ -1,0 +1,15 @@
+---
+
+#
+# Playbook to configure a LEMP stack for new jOeCHEM server (Laravel application)
+#
+
+- hosts: test
+  gather_facts: false
+  become: yes
+  #vars_files: 
+  roles:
+      - php
+        #- mysql
+        #- nginx
+

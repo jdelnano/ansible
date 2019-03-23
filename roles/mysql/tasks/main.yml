@@ -1,0 +1,28 @@
+---
+
+#
+# This role will install a specified php version
+#
+
+- name: "Install MySQL"
+  apt: name={{ item }} state=present
+  with_items:
+      - mysql-server
+      - python-mysqldb
+
+- name: "Start MySQL service"
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+      - mysql
+
+- name: "Create specified db"
+  mysql_db:
+      name: {{ mysql_db_name }}
+      state: present
+
+- name: "Create specified user"
+  mysql_user:
+      name: {{ mysql_user_name }}
+      password: {{ mysql_user_password }}
+      priv: *.*:ALL
+      state: present
