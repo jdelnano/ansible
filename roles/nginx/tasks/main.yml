@@ -4,8 +4,20 @@
 # Install nginx and configure for Laravel/LEMP stack
 #
 
-- name: "Install nginx"
-  apt: name=nginx state=lastest
+- name: "Install Nginx"
+  apt: name=nginx state=latest
+
+- name: "Install Certbot"
+  become: true
+  apt_repository:
+    repo: 'ppa:certbot/certbot'
+
+- name: "Install Certbot's Nginx Package"
+  become: true
+  apt_repository:
+    repo: 'python-certbot-nginx'
+
+# can run sudo certbot --nginx -d example.com -d www.example.com after these installations
 
 - name: "Start nginx service"
   service:
@@ -13,19 +25,17 @@
       state: started
   become: yes
 
-- name: "Copy the nginx config file and restart nginx"
-  copy:
-      src: /home/ubuntu/laravel-nginx.cfg
-      dest: /etc/nginx/sites-available/laravel-nginx.cfg
-      state: link
-  become: yes
-
-- name: "Create symlink between sites-enabled and sites-available"
-  file:
-      src: /etc/nginx/sites-available/laravel-nginx.cfg
-      dest: /etc/nginx/sites-enabled/default
-      state: link
-  become: yes
+  #- name: "Copy the nginx config file and restart nginx"
+  #  copy:
+  #      src: ./laravel-nginx.cfg
+  #      dest: /etc/nginx/sites-available/default
+  #
+  #- name: "Create symlink between sites-enabled and sites-available"
+  #  file:
+  #      src: /etc/nginx/sites-available/default
+  #      dest: /etc/nginx/sites-enabled/default
+  #      state: link
+  #  become: yes
 
 - name: "Restart nginx service"
   service:

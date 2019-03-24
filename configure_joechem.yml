@@ -12,5 +12,5 @@
     - ./vars/mysql.yml
   roles:
       - php
-        #- mysql
-        #- nginx
+      - mysql
+      - nginx
