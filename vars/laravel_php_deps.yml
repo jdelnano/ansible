@@ -31,3 +31,6 @@ ubuntu_laravel_deps:
     - deps: git
     - deps: tmux
     - deps: htop
+    - deps: awscli
+    - deps: python3
+    - deps: python3-pip

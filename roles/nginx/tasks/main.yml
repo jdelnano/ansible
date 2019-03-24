@@ -13,9 +13,7 @@
     repo: 'ppa:certbot/certbot'
 
 - name: "Install Certbot's Nginx Package"
-  become: true
-  apt_repository:
-    repo: 'python-certbot-nginx'
+  apt: name=python=certbot-nginx state=present
 
 # can run sudo certbot --nginx -d example.com -d www.example.com after these installations
 
