@@ -11,6 +11,7 @@ php_laravel_deps:
     - deps: php7.2-mysql
     - deps: php7.2-common
     - deps: php7.2-fpm
+    - deps: php7.2-curl
 
 ubuntu_laravel_deps:
     - deps: libc6
@@ -34,3 +35,5 @@ ubuntu_laravel_deps:
     - deps: awscli
     - deps: python3
     - deps: python3-pip
+    - deps: curl
+    - deps: unzip

@@ -1,0 +1,12 @@
+---
+#
+## deploy to joechem prod server(s) via ansible
+##
+#
+- hosts: test
+  gather_facts: False
+  remote_user: ubuntu
+  become: yes
+  roles:
+    - deploy_joechem
+

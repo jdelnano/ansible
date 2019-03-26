@@ -16,3 +16,37 @@
 - name: "Install PHP"
   with_items: "{{ php_laravel_deps }}"
   apt: name={{ item.deps }} state=present
+
+- name: "Install Composer"
+  shell: php -r "copy('https://getcomposer.org/installer', '/home/ubuntu/composer-setup.php');"
+  
+- name: "Install Composer Globally"
+  shell: sudo php /home/ubuntu/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+- name: Create a unique ID for deployment dir
+  shell: echo "`date +"%Y%m%d%H%M%S"`-$(cat /dev/urandom | tr -cd [:alpha:] | tr '[:upper:]' '[:lower:]' | head -c 4)"
+  register: my_unique_id
+
+- file:
+    path: /home/ubuntu/joechem_{{ my_unique_id.stdout }}
+    state: directory
+    mode: 0775
+
+- file:
+    path: /home/ubuntu/joechem_temp
+    state: directory
+    mode: 0775
+
+- file:
+    path: /var/www/joechem
+    state: directory
+    mode: 0755
+
+- name: Make directory.txt
+  raw: echo joechem_{{ my_unique_id.stdout }} > /home/ubuntu/directory.txt
+
+- name: Clone jOeCHEM
+  raw: sudo git clone https://github.com/jdelnano/joechem.git joechem_{{ my_unique_id.stdout }}/.
+
+- name: Establish temporary new symlink
+  raw: cp -R --symbolic-link /home/ubuntu/joechem_{{ my_unique_id.stdout }}/* /var/www/joechem/
