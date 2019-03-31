@@ -1,14 +1,14 @@
 ---
 
 - name: Get name of most-up-to-date deployment directory
-  shell: cat /home/ubuntu/directory.txt
+  shell: sudo cat /home/ubuntu/directory.txt
   register: previous_deployment
 
 - name: Empty joechem_temp
   raw: sudo rm -rf /home/ubuntu/joechem_temp/*
 
 - name: Copy previous deployment files to temp directory
-  raw: cp -R /home/ubuntu/{{ previous_deployment.stdout }}/* /home/ubuntu/joechem_temp/
+  raw: sudo cp -R /home/ubuntu/{{ previous_deployment.stdout }}/* /home/ubuntu/joechem_temp/
 
 - name: Remove previous symlink association
   raw:  sudo rm -rf /var/www/joechem/*
@@ -22,6 +22,9 @@
 - name: Create a unique ID
   shell: echo "`date +"%Y%m%d%H%M%S"`-$(cat /dev/urandom | tr -cd [:alpha:] | tr '[:upper:]' '[:lower:]' | head -c 4)"
   register: my_unique_id
+
+- name: Make directory.txt
+  raw: echo joechem_{{ my_unique_id.stdout }} > /home/ubuntu/directory.txt
 
 - name: Change ownership to ubuntu and www-data
   raw: sudo chown -R ubuntu:www-data /var/www/
@@ -66,6 +69,3 @@
 
 - name: Establish new symlink
   raw: cp -R --symbolic-link /home/ubuntu/joechem_{{ my_unique_id.stdout }}/* /var/www/joechem/
-
-- name: Make directory.txt
-  raw: echo joechem_{{ my_unique_id.stdout }} > /home/ubuntu/directory.txt
