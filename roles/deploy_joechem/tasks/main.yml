@@ -1,16 +1,8 @@
 ---
 
-- name: Get name of most-up-to-date deployment directory
+- name: Get name of what will soon be the old deployment directory
   shell: sudo cat /home/ubuntu/current_deployment.txt
   register: previous_deployment
-
-- name: Get name of previous deployment directory to be removed
-  shell: sudo cat /home/ubuntu/previous_deployment.txt
-  register: remove_deployment
-
-- name: Get name of directory to delete
-  shell: sudo cat /home/ubuntu/remove_deployment.txt
-  register: delete_deployment
 
 - name: Create a unique ID
   shell: echo "`date +"%Y%m%d%H%M%S"`-$(cat /dev/urandom | tr -cd [:alpha:] | tr '[:upper:]' '[:lower:]' | head -c 4)"
@@ -18,9 +10,6 @@
 
 - name: Make current_deployment.txt
   raw: echo joechem_{{ unique_id.stdout }} > /home/ubuntu/current_deployment.txt
-
-- name: Change ownership to ubuntu and www-data
-  raw: sudo chown -R ubuntu:www-data /var/www/
 
 - name: Clone from remote master branch into newly made directory
   raw: sudo git clone https://github.com/jdelnano/joechem.git joechem_{{ unique_id.stdout }}
@@ -69,13 +58,20 @@
   raw: php /home/ubuntu/joechem_{{ unique_id.stdout }}/artisan config:cache
 
 - name: Force establish new symlink
-  raw: ln -sfn /home/ubuntu/joechem_{{ unique_id.stdout }}/* /var/www/joechem
+  raw: sudo ln -sfn /home/ubuntu/joechem_{{ unique_id.stdout }}/* /var/www/joechem
+
+- name: Change ownership to ubuntu and www-data
+  raw: sudo chown -R ubuntu:www-data /var/www/
+
+- name: Restart nginx
+  service:
+      name: nginx
+      state: restarted
+
+- name: Restart php-fpm
+  service:
+      name: php7.1-fpm
+      state: restarted
 
 - name: Delete now completely outdated deployment
-  raw: sudo rm -rf /home/ubuntu/{{ delete_deployment.stdout }}
-
-- name: Make new previous_deployment.txt
-  raw: echo {{ previous_deployment.stdout }} > /home/ubuntu/previous_deployment.txt
-
-- name: Make new remove_deployment.txt
-  raw: echo {{ remove_deployment.stdout }} > /home/ubuntu/remove_deployment.txt
+  raw: sudo rm -rf /home/ubuntu/{{ previous_deployment.stdout }}

@@ -33,28 +33,12 @@
     mode: 0775
 
 - file:
-    path: /home/ubuntu/joechem_temp_1
-    state: directory
-    mode: 0775
-
-- file:
-    path: /home/ubuntu/joechem_temp_2
-    state: directory
-    mode: 0775
-
-- file:
     path: /var/www/joechem
     state: directory
     mode: 0755
 
 - name: Make current_deployment.txt
   raw: echo joechem_{{ my_unique_id.stdout }} > /home/ubuntu/current_deployment.txt
-
-- name: Make previous_deployment.txt
-  raw: echo joechem_temp_1 > /home/ubuntu/previous_deployment.txt
-
-- name: Make remove_deployment.txt
-  raw: echo joechem_temp_2 > /home/ubuntu/remove_deployment.txt
 
 - name: Clone jOeCHEM
   raw: sudo git clone https://github.com/jdelnano/joechem.git joechem_{{ my_unique_id.stdout }}/.
