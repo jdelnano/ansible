@@ -55,7 +55,7 @@
   raw: php /home/ubuntu/joechem_{{ unique_id.stdout }}/artisan view:clear
 
 - name: Run Laravel optimization commands
-  raw: php /home/ubuntu/joechem_{{ unique_id.stdout }}/artisan config:cache
+  raw: php /home/ubuntu/joechem_{{ unique_id.stdout }}/artisan config:clear
 
 - name: Force establish new symlink
   raw: sudo ln -sfn /home/ubuntu/joechem_{{ unique_id.stdout }}/* /var/www/joechem
