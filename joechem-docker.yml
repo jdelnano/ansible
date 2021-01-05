@@ -1,0 +1,28 @@
+---
+# deploy to staging with tag 'staging_joechem'
+- hosts: staging_joechem
+  remote_user: ubuntu
+  become: yes
+  vars_files:
+    - ./vars/global.yml
+  vars:
+    ecr_repo: joechem-staging
+    joechem_env: staging
+  roles:
+    - docker_joechem
+  tags:
+    - staging_joechem
+
+# deploy to prod with tag 'prod_joechem'
+- hosts: prod_joechem
+  remote_user: ubuntu
+  become: yes
+  vars_files:
+    - ./vars/global.yml
+  vars:
+    ecr_repo: joechem
+    joechem_env: prod
+  roles:
+    - docker_joechem
+  tags:
+    - prod_joechem

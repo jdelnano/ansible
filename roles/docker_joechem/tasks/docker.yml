@@ -1,0 +1,6 @@
+- name: Install Docker Pip Pkgs
+  pip:
+    name:
+      - docker
+      - docker-compose
+    executable: pip3

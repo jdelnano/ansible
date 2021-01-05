@@ -1,8 +1,5 @@
-[prod]
+[prod_joechem]
 joechem
 
-[stage]
-stage-joechem
-
-[test]
-test
+[staging_joechem]
+staging-joechem

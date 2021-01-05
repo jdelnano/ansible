@@ -1,0 +1,37 @@
+# dynamic inventory
+# not necessary, but in case things ever scale up
+plugin: aws_ec2
+aws_profile: default
+regions:
+  - us-east-2
+hostnames:
+  # list in order of hostname precedence; if no var in the list exists for the host do not add the host to inventory
+  #- tag:Name=prod_joechem,Name=staging-joechem # Return specific hosts only
+  - private-ip-address
+# Set individual variables with compose
+compose:
+  ansible_user: "'ubuntu'"
+  # new_var: private_ip_address
+keyed_groups:
+  # Add e.g. x86_64 hosts to an arch_x86_64 group
+  # - prefix: arch
+  #   key: 'architecture'
+  # Add hosts to tag_Name_Value groups for each Name/Value tag pair
+  - prefix: tag
+    key: tags
+  # Add hosts to e.g. type_m4_2xlarge
+  - prefix: type
+    key: instance_type
+  # Create security_group_sg_abcd1234 group for each SG
+  # - key: 'security_groups|json_query("[].group_id")'
+  #   prefix: 'security_group'
+  # Create a group for each value of the Application tag
+  # - key: tags.Application
+  #   separator: ''
+  # Create a group per region e.g. aws_region_us_east_2
+  - key: placement.region
+    prefix: aws_region
+  # Create a group (or groups) based on the value of a custom tag "Role" and add them to a metagroup called "project"
+  # - key: tags['Role']
+  #   prefix: foo
+  #   parent_group: "project"

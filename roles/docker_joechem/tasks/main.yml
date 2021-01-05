@@ -1,0 +1,22 @@
+# double check necessary docker deps are present
+- name: Ensure Docker Deps Are Present
+  include: docker.yml
+
+# re-aws ecr login
+- name: Refresh Login
+  shell: $(aws ecr get-login --no-include-email --region {{region}})
+
+# pull new docker image
+- name: Pull New Image
+  docker_image:
+    name: "{{ecr_endpoint}}/{{ecr_repo}}:{{joechem_image_tag}}"
+    source: pull
+    force: yes
+
+# restart just app container, be it staging or prod
+- name: Restart Docker-Compose
+  docker_compose:
+    project_src: /storage01/docker
+    services: ["app-{{joechem_env}}"]
+    dependencies: no
+    recreate: always
